@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9eacb3a8.css",
+    "main.js": "/static/js/main.faf39080.js",
+    "static/media/firesell_logo.png": "/static/media/firesell_logo.fd31469590dabf781e9a.png",
+    "index.html": "/index.html",
+    "main.9eacb3a8.css.map": "/static/css/main.9eacb3a8.css.map",
+    "main.faf39080.js.map": "/static/js/main.faf39080.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9eacb3a8.css",
+    "static/js/main.faf39080.js"
+  ]
+}
