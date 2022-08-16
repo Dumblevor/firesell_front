@@ -14,6 +14,7 @@ import Badge from '@mui/material/Badge';
 import logoFile from "../../Assets/firesell_logo.png"
 import { getLoggedInUserId } from "./auth";
 
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     right: -3,

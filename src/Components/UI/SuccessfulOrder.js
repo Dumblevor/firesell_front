@@ -11,7 +11,7 @@ export default function SuccessfulOrder(props) {
 
   const timer = setTimeout(() => {
     navigate("/")
-  }, 15000);
+  }, 10000);
 
 
   useEffect(() => {

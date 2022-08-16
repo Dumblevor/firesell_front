@@ -12,6 +12,26 @@ export default function SellerReg() {
     password: "",
   })
 
+  const token = localStorage.getItem('token')
+
+  const [newProdData, setNewProdData] = useState({
+    name: "",
+    price: 0.0,
+    description: ""
+  })
+
+
+  function handleProductSubmit(e) {
+    setNewProdData((prevState) => {
+      return {
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }
+    })
+  }
+
+
+
   function handleChange(e) {
     setRegistrationDataForm((prevState) => {
       return {
@@ -21,6 +41,20 @@ export default function SellerReg() {
     })
   }
 
+
+  async function handleProdPost(e) {
+    e.preventDefault()
+    try {
+      const { data } = await axios.post(`${baseUrl}/newproduct`, newProdData,{
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+    } catch (e) {
+      console.log(e.response.data)
+    }
+  }
+
+  
   async function handleRegistrationSubmission(e) {
     e.preventDefault()
     try {
@@ -94,6 +128,54 @@ export default function SellerReg() {
           LOGIN
         </Button>
       </div>
+
+      <h2>
+        Post a new product
+      </h2>
+      <form onSubmit={handleProdPost}>
+          <div className=" ">
+            <label className="label">Your product name:</label>
+            <div className="">
+              <textarea
+                className="input"
+                type="text"
+                name={'name'}
+                value={newProdData.name}
+                onChange={handleProductSubmit}
+                placeholder="example: developer1@firesell.com"
+              />
+            </div>
+          </div>
+          <div className=" ">
+            <label className="label">Description</label>
+            <div className="">
+              <textarea
+                className="input"
+                type="text"
+                name={'description'}
+                value={newProdData.description}
+                onChange={handleProductSubmit}
+                placeholder="description"
+              />
+            </div>
+          </div>
+          <div className=" ">
+            <label className="label">Price</label>
+            <div className="">
+              <textarea
+                className="input"
+                type="float"
+                name={'price'}
+                value={newProdData.price}
+                onChange={handleProductSubmit}
+                placeholder="price"
+              />
+            </div>
+          </div>
+          <Button sx={{ mt: 2 }} variant="outlined">
+            Register product
+          </Button>
+        </form>
       <p className="mx-5 my-5">Copyright Firesell 2022 by Dimitar Vidolov</p>
     </>
   )
