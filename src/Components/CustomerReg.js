@@ -25,51 +25,71 @@ export default function CustomerReg() {
     e.preventDefault()
     try {
       const { data } = await axios.post(`${baseUrl}/newcustomer`, registrationDataForm)
-      data
-      // && data.token && localStorage.setItem('token', data.token)
-      && navigate('/')
+      handleLoginSubmit(e)
     } catch (e) {
       console.log(e.response.data)
     }
   }
 
+  async function handleLoginSubmit(e) {
+    e.preventDefault()
+    try {
+      const { data } = await axios.post(`${baseUrl}/customerlogin`, registrationDataForm)
+      console.log(data.token);
+      if (data.token) {
+        localStorage.setItem('token', data.token)
+        localStorage.setItem("loggedIn", true)
+        localStorage.setItem("cartItems", JSON.stringify([]))
+
+        navigate('/')
+      } else {
+        navigate('/login')
+      }
+    } catch (e) {
+    console.log(e.response.data)
+  }
+}
+
   return (
     <>
       <div className="mx-5">
         <div>Image</div>
-        <h1> Welcome back</h1>
-        <h2> Sign in below</h2>
+        <h2> Welcome back</h2>
+        <h3> Sign in below</h3>
         <form onSubmit={handleRegistrationSubmission}>
           <div className=" ">
             <label className="label">Email address</label>
             <div className="">
-              <textarea
+              <input
                 className="input"
-                type="text"
+                type="email"
                 name={'email'}
                 value={registrationDataForm.email}
                 onChange={handleChange}
                 placeholder="example: developer1@firesell.com"
+                autoComplete="on"
               />
             </div>
           </div>
           <div className=" ">
-            <label className="label">Password</label>
+            <label className="label">
+              Password
+            </label>
             <div className="">
-              <textarea
+              <input
                 className="input"
-                type="text"
+                type="password"
                 name={'password'}
                 value={registrationDataForm.password}
                 onChange={handleChange}
                 placeholder="Password"
+                autoComplete="on"
               />
             </div>
           </div>
-          <Button sx={{ mt: 2 }} variant="outlined">
+          <Button type="submit" sx={{ mt: 2 }} variant="outlined">
             REGISTER
           </Button>
-
         </form>
         <div> remember me</div>
         <div>Already have an account? Sign in here.</div>

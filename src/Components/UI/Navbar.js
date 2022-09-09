@@ -68,18 +68,8 @@ export default function Navbar() {
           </NavLink>
           <Typography variant={'h1'}>
             Firesell
-            <Typography variant={'subtitle2'}>
-              Where software comes to thrive
-            </Typography>
-          </Typography>
-
+          </Typography> 
         </Stack>
-        <Stack sx={{ mt: 2, ml: 2 }} direction="row" spacing={2}>
-
-
-        </Stack>
-
-
         <div className="navbar-end">
 
           <ButtonGroup onClick={() => handleChange(null, false)} variant="outlined" aria-label="outlined button group" sx={{ mr: 3 }}>

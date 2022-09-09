@@ -53,11 +53,13 @@ return (
           <div className="">
             <textarea
               className="input"
-              type="text"
+              type="email"
               name={'email'}
               value={loginDataForm.email}
               onChange={handleChange}
               placeholder="example: developer1@firesell.com"
+              autoComplete="on"
+
             />
           </div>
         </div>
@@ -66,11 +68,13 @@ return (
           <div className="">
             <textarea
               className="input"
-              type="text"
+              type="password"
               name={'password'}
               value={loginDataForm.password}
               onChange={handleChange}
               placeholder="Password"
+              autoComplete="on"
+
             />
           </div>
         </div>

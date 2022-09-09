@@ -120,7 +120,7 @@ export default function SellerReg() {
               />
             </div>
           </div>
-          <Button sx={{ mt: 2 }} variant="outlined">
+          <Button sx={{ mt: 2 }} type="submit" variant="outlined">
             REGISTER
           </Button>
         </form>

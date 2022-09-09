@@ -19,13 +19,10 @@ import Skeleton from '@mui/material/Skeleton';
 
 
 export default function Checkout() {
-
-
   const navigate = useNavigate()
 
   const [productData, setProductData] = useState([])
   const [alignment, setAlignment] = React.useState('card');
-
   const [cardData, setCardData] = useState({
     name: "",
     number: "",
@@ -34,31 +31,40 @@ export default function Checkout() {
   })
 
   let total = 0;
-
   const token = localStorage.getItem('token')
   let itemsGet = JSON.parse(localStorage.getItem('cartItems'))
 
-  useEffect(() => {
-    let newSet = [...new Set(itemsGet)]
-    let array = []
-    // async function fetchOneProduct(item) {
-    //   const { data } = await axios.get(`${baseUrl}/products/${item}`)
-    //   return data
-    // }
 
-    for (let item in newSet) {
-      array.push(new Promise(async (resolve) => {
-        const { data } = await axios.get(`${baseUrl}/products/${newSet[item]}`)
-        resolve(data)
-      }))
+  async function getProductData() {
+    if (itemsGet !== undefined) {
+      let newSet = [...new Set(itemsGet)]
+      let array = []
+      // async function fetchOneProduct(item) {
+      //   const { data } = await axios.get(`${baseUrl}/products/${item}`)
+      //   return data
+      // }  
+      for (let item in newSet) {
+        array.push(new Promise(async (resolve) => {
+          const { data } = await axios.get(`${baseUrl}/products/${newSet[item]}`)
+          resolve(data)
+        }))
+      }
+      console.log(array);
+      setProductData(array)
+      Promise.all(array).then((values) => {
+        setProductData(values)
+        console.log(values);
+      })
     }
+  }
 
-    // setProductData(array)
-
-    Promise.all(array).then((values) => {
-      setProductData(values)
-    })
-  }, [itemsGet])
+  useEffect(() => {
+    getProductData()
+    const productInterval = setInterval(() => {
+      getProductData()
+    }, 10000);
+    return () => { clearInterval(productInterval) }
+  }, [])
 
 
   const handleChangeToggle = (event, newAlignment) => {
@@ -74,38 +80,28 @@ export default function Checkout() {
     })
   }
 
-
   async function handleOrderSubmit(e) {
     e.preventDefault()
 
+    // id numbers
+    const itemsGet = "1,1,2,3,2,4"
+    // convert to array of ids
+    const arrayOfIds = itemsGet.split(',')
+    // ensure they are numbers
+    const numbersOfIds = arrayOfIds.map(id => Number(id))
+    // create an object where product_id are keys and values are quantities 
+    const objs = numbersOfIds.reduce((acc, productId) => {
+      if (acc[productId]) return { ...acc, [productId]: acc[productId] + 1 }
+      else return { ...acc, [productId]: 1 }
+    }, {})
 
+    // turn this into an array of objects, with product_id and qty
+    const data = Object.entries(objs).map((item) => {
+      const [productId, quantity] = item
+      return { product_id: productId, qty: quantity }
+    })
 
-      // id numbers
-const itemsGet = "1,1,2,3,2,4"
-// convert to array of ids
-const arrayOfIds = itemsGet.split(',')
-// ensure they are numbers
-const numbersOfIds = arrayOfIds.map(id => Number(id))
-// create an object where product_id are keys and values are quantities 
-const objs = numbersOfIds.reduce((acc, productId) => {
-  if (acc[productId]) return { ...acc, [productId]: acc[productId] + 1 }
-  else return { ...acc, [productId]: 1 }
-}, {})
-
-// turn this into an array of objects, with product_id and qty
-const data = Object.entries(objs).map((item) => {
-  const [productId, quantity] = item
-  return { product_id: productId, qty: quantity }
-})
-
-console.log(data) // this is the format you want for your backend
-
-
-
-
-
-
-
+    console.log(data) // this is the format you want for your backend
     // const itemsArray = itemsGet.join(",")
     // //array of numbers
     // const itemsReduce = itemsArray.reduce((acc, item) => {
@@ -114,11 +110,10 @@ console.log(data) // this is the format you want for your backend
     // console.log(itemsArray);
 
     try {
-      const { response } = await axios.post(`${baseUrl}/neworder`, {"products": data}, {
+      const { response } = await axios.post(`${baseUrl}/neworder`, { "products": data }, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      console.log({"products": data});
-
+      console.log({ "products": data });
       localStorage.setItem("cartItems", JSON.stringify([]))
       navigate('/sucessfulorder')
     } catch (e) {
@@ -126,6 +121,15 @@ console.log(data) // this is the format you want for your backend
     }
   }
 
+  function hadnleDelete(productID) {
+    let currentItems = JSON.parse(localStorage.getItem('cartItems'))
+    let itemsWithout = currentItems.filter((number) => { return number !== productID })
+    localStorage.setItem('cartItems', JSON.stringify(itemsWithout))
+    let newArray = productData.filter((object) => {
+      return object.id !== productID
+    })
+    setProductData(newArray)
+  }
 
 
   return (
@@ -206,31 +210,42 @@ console.log(data) // this is the format you want for your backend
             </Box>
           </Grid>
 
-
           <Grid item xs={5}>
-            {
-              productData ? productData.map((productData, index) => {
-                let qty = itemsGet.filter((item) => item === productData.id).length
-                total += productData.price * qty
-                return (
-                  <div key={index}>
-                    <Typography gutterBottom variant="h4" >Your Cart</Typography>
+            <Typography gutterBottom variant="h4" >
+              Your Cart
+            </Typography>
+            <Typography gutterBottom variant="h5" >Total: € {parseFloat(total).toFixed(2)}</Typography>
 
+            {
+              productData ? productData.map((oneProductData, index) => {
+                let qty = itemsGet.filter((item) => item === oneProductData.id).length
+                total += oneProductData.price * qty
+
+                return (
+                  qty !== 0 &&
+                  <div key={oneProductData.created_at}>
                     <hr />
-                    <Typography gutterBottom variant="h5" component="div">{productData.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">{productData.description}</Typography>
-                    €{productData.price} x {qty} QTY
-                    <hr />
+                    <Typography gutterBottom variant="h5" component="div">
+                      {oneProductData.name}</Typography>
+
+                    <Typography variant="body2" color="text.secondary">
+                      {oneProductData.description}</Typography>
+
+                    €{oneProductData.price} x {qty} quantity
+
+                    <Box textAlign='right'>
+                      <Button onClick={() => hadnleDelete(oneProductData.id)}>
+                        Remove item</Button>
+                    </Box>
                   </div>
                 )
               }
               ) : (
                 <p> Loading products, please wait. </p >)}
+            <Typography gutterBottom variant="h5" >Total: € {parseFloat(total).toFixed(2)}</Typography>
 
-            {productData.length === 0 &&
-              <div>
-                <Typography gutterBottom variant="h4">Your Cart</Typography>
-                < br /><br />
+            {productData !== undefined && productData.length === 0 &&
+              <div> <br />
                 <Stack spacing={1}>
                   <Skeleton variant="circular" width={40} height={40} />
                   <Skeleton variant="text">-----------</Skeleton>
@@ -239,10 +254,9 @@ console.log(data) // this is the format you want for your backend
                 <p>Your cart is empty, go ahead and add some products!</p>
               </div>}
             <br /><br />
-            <Typography gutterBottom variant="h4" >Total: € {parseFloat(total).toFixed(2)}</Typography>
 
-            <p>Please note shipping is always free</p>
-            <hr />
+            <p>Please note shipping is free</p>
+
 
           </Grid>
 
