@@ -68,7 +68,7 @@ export default function Navbar() {
           </NavLink>
           <Typography variant={'h1'}>
             Firesell
-          </Typography> 
+          </Typography>
         </Stack>
         <div className="navbar-end">
 
@@ -79,7 +79,11 @@ export default function Navbar() {
                   <ShoppingCartIcon />
                 </StyledBadge>
               </IconButton>
+
             </Link>
+            <Button component={NavLink} to="/checkout" variant="outlined">
+              Checkout
+            </Button>
             {!isLoggedIn && <Button component={NavLink} to="/login" variant="outlined">
               Login
             </Button>}
@@ -96,8 +100,6 @@ export default function Navbar() {
           <Box sx={{ width: '100%' }}>
             <Tabs value={value} onChange={handleChange} centered aria-label="nav tabs">
               <Tab component={Link} to="/" label="Hot today 🔥" />
-              {/* <Tab component={Link} to="/" label="Most downloaded⬇" />
-              <Tab component={Link} to="/" label="Recent hits 🔝" /> */}
               <Tab component={Link} to="/newseller" label="Sell on Firesell $" />
             </Tabs>
           </Box>

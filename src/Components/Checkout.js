@@ -7,16 +7,9 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import Product from './products/Product.js';
-import Avatar from '@mui/material/Avatar';
 import Skeleton from '@mui/material/Skeleton';
-
 
 export default function Checkout() {
   const navigate = useNavigate()
@@ -32,17 +25,14 @@ export default function Checkout() {
 
   let total = 0;
   const token = localStorage.getItem('token')
-  let itemsGet = JSON.parse(localStorage.getItem('cartItems'))
 
 
   async function getProductData() {
+    let itemsGet = JSON.parse(localStorage.getItem('cartItems'))
     if (itemsGet !== undefined) {
       let newSet = [...new Set(itemsGet)]
       let array = []
-      // async function fetchOneProduct(item) {
-      //   const { data } = await axios.get(`${baseUrl}/products/${item}`)
-      //   return data
-      // }  
+
       for (let item in newSet) {
         array.push(new Promise(async (resolve) => {
           const { data } = await axios.get(`${baseUrl}/products/${newSet[item]}`)
@@ -102,12 +92,7 @@ export default function Checkout() {
     })
 
     console.log(data) // this is the format you want for your backend
-    // const itemsArray = itemsGet.join(",")
-    // //array of numbers
-    // const itemsReduce = itemsArray.reduce((acc, item) => {
-    //   return 
-    // })
-    // console.log(itemsArray);
+
 
     try {
       const { response } = await axios.post(`${baseUrl}/neworder`, { "products": data }, {
@@ -122,22 +107,35 @@ export default function Checkout() {
   }
 
   function hadnleDelete(productID) {
-    let currentItems = JSON.parse(localStorage.getItem('cartItems'))
-    let itemsWithout = currentItems.filter((number) => { return number !== productID })
-    localStorage.setItem('cartItems', JSON.stringify(itemsWithout))
+
+    let itemsWithout = JSON.parse(localStorage.getItem('cartItems')).filter((number) => { return number !== productID })
+    let itemsGet = localStorage.setItem('cartItems', JSON.stringify(itemsWithout)) // updates local storage
+
     let newArray = productData.filter((object) => {
       return object.id !== productID
     })
-    setProductData(newArray)
+    setProductData(newArray) // updates state
   }
 
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+
+      <Box sx={{ flexGrow: 1 }} >
+
         <Grid container spacing={2}>
-          <Grid item xs={1}></Grid>
+
+          <Grid item xs={1}> 
+          <Box textAlign='left'>
+            <Button onClick={() => navigate("/")}>
+              Back to apps</Button>
+          </Box></Grid>
+
           <Grid item xs={6}>
+
+            <Typography gutterBottom variant="h5" textAlign='center' >
+              Payment method
+            </Typography>
             <ToggleButtonGroup
               color="primary"
               value={alignment}
@@ -207,6 +205,10 @@ export default function Checkout() {
               <Button variant="contained" type="submit" form="orderForm" onClick={(e) => handleOrderSubmit(e)} color="success">
                 Complete Purchase
               </Button>
+              <Box textAlign='left'>
+            <Button onClick={() => navigate("/")}>
+              Back to apps</Button>
+          </Box>
             </Box>
           </Grid>
 
@@ -214,16 +216,16 @@ export default function Checkout() {
             <Typography gutterBottom variant="h4" >
               Your Cart
             </Typography>
-            <Typography gutterBottom variant="h5" >Total: € {parseFloat(total).toFixed(2)}</Typography>
 
             {
               productData ? productData.map((oneProductData, index) => {
-                let qty = itemsGet.filter((item) => item === oneProductData.id).length
+                let qty = JSON.parse(localStorage.getItem('cartItems')).filter((item) => item === oneProductData.id).length
                 total += oneProductData.price * qty
 
                 return (
-                  qty !== 0 &&
-                  <div key={oneProductData.created_at}>
+
+                  <div key={`${index}_${oneProductData.id}`}>
+                
                     <hr />
                     <Typography gutterBottom variant="h5" component="div">
                       {oneProductData.name}</Typography>
@@ -263,6 +265,7 @@ export default function Checkout() {
 
         </Grid>
       </Box>
+
     </>
   )
 }
