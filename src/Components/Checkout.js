@@ -10,10 +10,13 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
+import Avatar from '@mui/material/Avatar';
+
 
 export default function Checkout() {
+  let total = 0;
+  const token = localStorage.getItem('token')
   const navigate = useNavigate()
-
   const [productData, setProductData] = useState([])
   const [alignment, setAlignment] = React.useState('card');
   const [cardData, setCardData] = useState({
@@ -22,9 +25,6 @@ export default function Checkout() {
     expiry: "",
     security: "",
   })
-
-  let total = 0;
-  const token = localStorage.getItem('token')
 
 
   async function getProductData() {
@@ -39,11 +39,10 @@ export default function Checkout() {
           resolve(data)
         }))
       }
-      console.log(array);
+
       setProductData(array)
       Promise.all(array).then((values) => {
         setProductData(values)
-        console.log(values);
       })
     }
   }
@@ -72,13 +71,15 @@ export default function Checkout() {
 
   async function handleOrderSubmit(e) {
     e.preventDefault()
-
     // id numbers
-    const itemsGet = "1,1,2,3,2,4"
+    let itemsGet = JSON.parse(localStorage.getItem('cartItems'))
+
     // convert to array of ids
     const arrayOfIds = itemsGet.split(',')
+
     // ensure they are numbers
     const numbersOfIds = arrayOfIds.map(id => Number(id))
+
     // create an object where product_id are keys and values are quantities 
     const objs = numbersOfIds.reduce((acc, productId) => {
       if (acc[productId]) return { ...acc, [productId]: acc[productId] + 1 }
@@ -92,7 +93,6 @@ export default function Checkout() {
     })
 
     console.log(data) // this is the format you want for your backend
-
 
     try {
       const { response } = await axios.post(`${baseUrl}/neworder`, { "products": data }, {
@@ -110,32 +110,26 @@ export default function Checkout() {
 
     let itemsWithout = JSON.parse(localStorage.getItem('cartItems')).filter((number) => { return number !== productID })
     let itemsGet = localStorage.setItem('cartItems', JSON.stringify(itemsWithout)) // updates local storage
-
-    let newArray = productData.filter((object) => {
+    setProductData((prevState) => prevState.filter((object) => {
       return object.id !== productID
-    })
-    setProductData(newArray) // updates state
+    })) // updates state
   }
 
 
+  function clearCart() {
+    localStorage.setItem("cartItems", JSON.stringify([]))
+    setProductData([])
+  }
+
   return (
     <>
-
       <Box sx={{ flexGrow: 1 }} >
-
         <Grid container spacing={2}>
-
-          <Grid item xs={1}> 
-          <Box textAlign='left'>
-            <Button onClick={() => navigate("/")}>
-              Back to apps</Button>
-          </Box></Grid>
-
-          <Grid item xs={6}>
-
+          <Grid item xs={6} sx={{ m: 3 }}>
             <Typography gutterBottom variant="h5" textAlign='center' >
               Payment method
             </Typography>
+
             <ToggleButtonGroup
               color="primary"
               value={alignment}
@@ -201,21 +195,24 @@ export default function Checkout() {
                 </div>
               </div>
             </form>
+
             <Box sx={{ xs: 2, my: 2 }} textAlign='center'>
               <Button variant="contained" type="submit" form="orderForm" onClick={(e) => handleOrderSubmit(e)} color="success">
                 Complete Purchase
               </Button>
               <Box textAlign='left'>
-            <Button onClick={() => navigate("/")}>
-              Back to apps</Button>
-          </Box>
+                <Button onClick={() => navigate("/")}>
+                  Back to apps</Button>
+              </Box>
             </Box>
           </Grid>
 
-          <Grid item xs={5}>
+          <Grid item xs={5} sx={{ m: 3 }}>
             <Typography gutterBottom variant="h4" >
               Your Cart
             </Typography>
+            <p>Please note shipping is free.</p>
+
 
             {
               productData ? productData.map((oneProductData, index) => {
@@ -223,18 +220,24 @@ export default function Checkout() {
                 total += oneProductData.price * qty
 
                 return (
-
                   <div key={`${index}_${oneProductData.id}`}>
-                
                     <hr />
+                    {oneProductData.pictures !== undefined &&
+                      <Avatar alt={oneProductData.name} src={oneProductData.pictures[0].url} />}
+
                     <Typography gutterBottom variant="h5" component="div">
-                      {oneProductData.name}</Typography>
+                      {oneProductData.name}
+                    </Typography>
 
                     <Typography variant="body2" color="text.secondary">
-                      {oneProductData.description}</Typography>
+                      {oneProductData.description}
+                    </Typography>
 
                     €{oneProductData.price} x {qty} quantity
-
+                    <br />
+                    <Typography gutterBottom variant="h7">
+                      Subtotal: € {parseFloat(total).toFixed(2)}
+                    </Typography>
                     <Box textAlign='right'>
                       <Button onClick={() => hadnleDelete(oneProductData.id)}>
                         Remove item</Button>
@@ -242,27 +245,42 @@ export default function Checkout() {
                   </div>
                 )
               }
+
+
               ) : (
-                <p> Loading products, please wait. </p >)}
-            <Typography gutterBottom variant="h5" >Total: € {parseFloat(total).toFixed(2)}</Typography>
+
+                <p> Loading products, please wait. </p >
+              )
+            }
+            <hr />
+            {total !== 0 && <div>
+              <Typography gutterBottom variant="h5" >
+                Total: € {parseFloat(total).toFixed(2)}
+              </Typography>
+              <div style={{ display: 'flex', flexDirection: "row", justifyContent: 'flex-end' }}>
+                <Button onClick={clearCart} >
+                  Clear Cart
+                </Button>
+              </div>
+            </div>
+            }
+
 
             {productData !== undefined && productData.length === 0 &&
-              <div> <br />
+              <div>
                 <Stack spacing={1}>
                   <Skeleton variant="circular" width={40} height={40} />
                   <Skeleton variant="text">-----------</Skeleton>
                   <Skeleton variant="rectangular" width={210} height={118} />
                 </Stack>
-                <p>Your cart is empty, go ahead and add some products!</p>
+                <Link to='/'>
+                  <p>Your cart is empty, go ahead and add some products:
+
+                    <Button>
+                      Back to apps</Button>
+                  </p></Link>
               </div>}
-            <br /><br />
-
-            <p>Please note shipping is free</p>
-
-
           </Grid>
-
-
         </Grid>
       </Box>
 

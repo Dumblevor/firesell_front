@@ -3,14 +3,11 @@ import * as React from 'react';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { spacing } from '@mui/system'
 import Avatar from '@mui/material/Avatar';
-import { SettingsRemote } from "@mui/icons-material";
 
 
 
@@ -28,7 +25,7 @@ export default function Product(props) {
         <CardContent>
           <Avatar alt={props.name} src={props.pictures[0].url} />
           <Typography gutterBottom variant="h5" component="div">{props.name}</Typography>
-          <div className="subtitle is-6">sold by: (seller id) - {props.product_owner_ID}</div>
+          <div className="subtitle is-6">sold by: seller-id #{props.product_owner_ID}</div>
           <CardMedia
             component="img"
             height="140"

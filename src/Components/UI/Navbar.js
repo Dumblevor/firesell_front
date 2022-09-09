@@ -58,6 +58,11 @@ export default function Navbar() {
     setIsLoggedIn(false)
   }
 
+  const buttonStyle = {
+    display: 'flex',
+    flexDirection: "row",
+    justifyContent: "flex-end"
+};
 
   return (
     <>
@@ -70,7 +75,8 @@ export default function Navbar() {
             Firesell
           </Typography>
         </Stack>
-        <div className="navbar-end">
+
+        <div style={buttonStyle}>
 
           <ButtonGroup onClick={() => handleChange(null, false)} variant="outlined" aria-label="outlined button group" sx={{ mr: 3 }}>
             <Link to='/checkout'>
@@ -81,9 +87,6 @@ export default function Navbar() {
               </IconButton>
 
             </Link>
-            <Button component={NavLink} to="/checkout" variant="outlined">
-              Checkout
-            </Button>
             {!isLoggedIn && <Button component={NavLink} to="/login" variant="outlined">
               Login
             </Button>}
@@ -95,12 +98,16 @@ export default function Navbar() {
             </Button>}
           </ButtonGroup>
         </div>
+
+
         <nav >
+
 
           <Box sx={{ width: '100%' }}>
             <Tabs value={value} onChange={handleChange} centered aria-label="nav tabs">
               <Tab component={Link} to="/" label="Hot today 🔥" />
               <Tab component={Link} to="/newseller" label="Sell on Firesell $" />
+              <Tab component={Link} to="/checkout" label="Checkout" />
             </Tabs>
           </Box>
 

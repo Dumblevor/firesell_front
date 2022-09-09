@@ -3,6 +3,8 @@ import baseUrl from "../config.js"
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
 
 export default function SellerReg() {
@@ -16,8 +18,11 @@ export default function SellerReg() {
 
   const [newProdData, setNewProdData] = useState({
     name: "",
-    price: 0.0,
-    description: ""
+    price: null,
+    description: "",
+    url: "",
+    categories: "",
+    pictures: ""
   })
 
 
@@ -45,16 +50,18 @@ export default function SellerReg() {
   async function handleProdPost(e) {
     e.preventDefault()
     try {
-      const { data } = await axios.post(`${baseUrl}/newproduct`, newProdData,{
+      const { data } = await axios.post(`${baseUrl}/newproduct`, newProdData, {
         headers: { Authorization: `Bearer ${token}` },
       })
+      console.log(newProdData);
+      console.log(data);
 
     } catch (e) {
       console.log(e.response.data)
     }
   }
 
-  
+
   async function handleRegistrationSubmission(e) {
     e.preventDefault()
     try {
@@ -73,7 +80,7 @@ export default function SellerReg() {
       const { data } = await axios.post(`${baseUrl}/sellerlogin`, registrationDataForm)
       console.log(data.token);
       if (data.token) {
-        
+
         localStorage.setItem('token', data.token)
         localStorage.setItem("loggedIn", true)
         localStorage.setItem("cartItems", JSON.stringify([]))
@@ -88,95 +95,137 @@ export default function SellerReg() {
     }
   }
 
+
+
+
   return (
     <>
-      <div className="mx-5">
-        <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="computer online selling data and software revenue dashboard"></img>
-        <h1> Welcome Seller</h1>
-        <form onSubmit={handleRegistrationSubmission}>
-          <div className=" ">
-            <label className="label">Email address</label>
-            <div className="">
-              <textarea
-                className="input"
-                type="text"
-                name={'email'}
-                value={registrationDataForm.email}
-                onChange={handleChange}
-                placeholder="example: developer1@firesell.com"
-              />
-            </div>
-          </div>
-          <div className=" ">
-            <label className="label">Password</label>
-            <div className="">
-              <textarea
-                className="input"
-                type="text"
-                name={'password'}
-                value={registrationDataForm.password}
-                onChange={handleChange}
-                placeholder="Password"
-              />
-            </div>
-          </div>
-          <Button sx={{ mt: 2 }} type="submit" variant="outlined">
-            REGISTER
-          </Button>
-        </form>
-        <Button sx={{ mt: 2 }} variant="outlined" onClick={(e) => handleLoginSubmit(e)}>
-          LOGIN
-        </Button>
-      </div>
+      <Box sx={{ flexGrow: 1 }} >
 
-      <h2>
-        Post a new product
-      </h2>
-      <form onSubmit={handleProdPost}>
-          <div className=" ">
-            <label className="label">Your product name:</label>
-            <div className="">
-              <textarea
-                className="input"
-                type="text"
-                name={'name'}
-                value={newProdData.name}
-                onChange={handleProductSubmit}
-                placeholder="example: developer1@firesell.com"
-              />
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <div className="mx-5">
+              <h1> Welcome Seller</h1>
+              <form onSubmit={handleRegistrationSubmission}>
+                <div className=" ">
+                  <label className="label">
+                    Email address</label>
+                  <div className="">
+                    <textarea
+                      className="input"
+                      type="text"
+                      name={'email'}
+                      value={registrationDataForm.email}
+                      onChange={handleChange}
+                      placeholder="example: developer1@firesell.com"
+                    />
+                  </div>
+                </div>
+                <div className=" ">
+                  <label className="label">Password</label>
+                  <div className="">
+                    <textarea
+                      className="input"
+                      type="text"
+                      name={'password'}
+                      value={registrationDataForm.password}
+                      onChange={handleChange}
+                      placeholder="Password"
+                    />
+                  </div>
+                </div>
+                <Button sx={{ mr: 1 , mt: 1}} type="submit" variant="outlined">
+                  REGISTER
+                </Button>
+                <Button  sx={{ mt: 1}} variant="outlined" onClick={(e) => handleLoginSubmit(e)}>
+                  LOGIN
+                </Button>
+              </form>
+
             </div>
-          </div>
-          <div className=" ">
-            <label className="label">Description</label>
-            <div className="">
-              <textarea
-                className="input"
-                type="text"
-                name={'description'}
-                value={newProdData.description}
-                onChange={handleProductSubmit}
-                placeholder="description"
-              />
-            </div>
-          </div>
-          <div className=" ">
-            <label className="label">Price</label>
-            <div className="">
-              <textarea
-                className="input"
-                type="float"
-                name={'price'}
-                value={newProdData.price}
-                onChange={handleProductSubmit}
-                placeholder="price"
-              />
-            </div>
-          </div>
-          <Button sx={{ mt: 2 }} variant="outlined">
-            Register product
-          </Button>
-        </form>
-      <p className="mx-5 my-5">Copyright Firesell 2022 by Dimitar Vidolov</p>
+          </Grid>
+
+          <Grid item xs={6} sx={{ p: 3}}>
+            <h2>
+              Post a new product
+            </h2>
+            <form onSubmit={handleProdPost}>
+              <div >
+                <label className="label">
+                  Product name:</label>
+                <div className="">
+                  <textarea
+                    className="input"
+                    type="text"
+                    name={'name'}
+                    value={newProdData.name}
+                    onChange={handleProductSubmit}
+                    placeholder="example: developer1@firesell.com"
+                  />
+                </div>
+              </div>
+              <div className=" ">
+                <label className="label">
+                  Description</label>
+                <div className="">
+                  <textarea
+                    className="input"
+                    type="text"
+                    name={'description'}
+                    value={newProdData.description}
+                    onChange={handleProductSubmit}
+                    placeholder="description"
+                  />
+                </div>
+              </div>
+              <div className=" ">
+                <label className="label">
+                  Price in € / EUR</label>
+                <div className="">
+                  <textarea
+                    className="input"
+                    type="float"
+                    name={'price'}
+                    value={newProdData.price}
+                    onChange={handleProductSubmit}
+                    placeholder="2.99"
+                  />
+                </div>
+              </div>
+              <div className=" ">
+                <label className="label">Download url</label>
+                <div className="">
+                  <textarea
+                    className="input"
+                    type="url"
+                    name={'url'}
+                    value={newProdData.url}
+                    onChange={handleProductSubmit}
+                    placeholder="www.yourdomain.com/api/product/id/purchase"
+                  />
+                </div>
+              </div>
+              <div className=" ">
+                <label className="label">Picture url</label>
+                <div className="">
+                  <textarea
+                    className="input"
+                    type="url"
+                    name={'url'}
+                    value={newProdData.pictures}
+                    onChange={handleProductSubmit}
+                    placeholder="www.yourdomain.com/api/product/id/picture.png"
+                  />
+                </div>
+              </div>
+              <Button sx={{ mt: 2 }} variant="outlined" type="submit">
+                Register product
+              </Button>
+            </form>
+          </Grid>
+          <p className="mx-5 my-5">Copyright Firesell 2022 by Dimitar Vidolov</p>
+        </Grid>
+      </Box>
     </>
   )
 
