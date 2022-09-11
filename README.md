@@ -32,33 +32,18 @@ Association tables for Product / Category and OrderLines took some time due to c
 
 ## Timeline
 - Day 1: Data models
-- Day 2: Join and association tables, serializers
-- Day 3: Controllers, Secure Route
-- Day 4: Controllers, frontend, UI library
-- Day 5: Promise.all on the frontend
-
-
-### Build:
-#### MVP Roadmap
-
-#### Initial Backlog
-
-#### Backlog
-
-#### Stretchgoals
-
-#### MVP done
+- Day 2: Join and association tables, serializers.
+- Day 3: Controllers, Secure Route.
+- Day 4: Controllers, frontend, UI library.
+- Day 5: Cart updating, checkout, sellers registration and adding new products.
 
 --------
-Final version of the newsfeed:
-![Store](./)
 
 ## Bugs, Wins & Learnings
-Currently due to some configuration changes in the database hosting login and register can be buggy.
-Checking out doesn't create an order on the backend.
+Currently due to some configuration change in the database hosting sand postgresql updates - registration  can be buggy.
 
 The big wins were getting all the database tables right on the backend.
-On the frontend it was the checkout page where the user can delete items and checkout.
+On the frontend it was the checkout page where the user can delete items clear cart and checkout.
 
 The checkout needs to be completed on the backend, ratings code needs to be completed on the both the frontend and the backend.
 
