@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/static/css/main.9eacb3a8.css",
-    "main.js": "/static/js/main.0df0bf4d.js",
+    "main.js": "/static/js/main.488b8540.js",
     "static/media/firesell_logo.png": "/static/media/firesell_logo.fd31469590dabf781e9a.png",
     "index.html": "/index.html",
     "main.9eacb3a8.css.map": "/static/css/main.9eacb3a8.css.map",
-    "main.0df0bf4d.js.map": "/static/js/main.0df0bf4d.js.map"
+    "main.488b8540.js.map": "/static/js/main.488b8540.js.map"
   },
   "entrypoints": [
     "static/css/main.9eacb3a8.css",
-    "static/js/main.0df0bf4d.js"
+    "static/js/main.488b8540.js"
   ]
 }
