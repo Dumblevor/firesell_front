@@ -36,7 +36,6 @@ export default function Product(props) {
         </CardContent>
       </Link>
       <Stack spacing={2}>
-        {/* <Rating name="half-rating" defaultValue={2.5} precision={0.5} /> */}
         <Rating name="half-rating-read" defaultValue={props.rating} precision={0.5} readOnly />
         €{props.price}
       </Stack>

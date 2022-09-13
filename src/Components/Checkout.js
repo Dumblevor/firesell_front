@@ -32,20 +32,15 @@ export default function Checkout() {
     if (itemsGet !== undefined) {
       let newSet = [...new Set(itemsGet)]
       let array = []
-
       for (let item in newSet) {
         array.push(new Promise(async (resolve) => {
           const { data } = await axios.get(`${baseUrl}/products/${newSet[item]}`)
           resolve(data)
-        }))
-      }
-
+        }))}
       setProductData(array)
       Promise.all(array).then((values) => {
         setProductData(values)
-      })
-    }
-  }
+      })}}
 
   useEffect(() => {
     getProductData()
@@ -71,13 +66,8 @@ export default function Checkout() {
 
   async function handleOrderSubmit(e) {
     e.preventDefault()
-    // id numbers
     let itemsGet = JSON.parse(localStorage.getItem('cartItems'))
-
-    // convert to array of ids
-    const arrayOfIds = itemsGet.split(',')
-
-    // ensure they are numbers
+    const arrayOfIds = JSON.parse(localStorage.getItem('cartItems')).split(',')
     const numbersOfIds = arrayOfIds.map(id => Number(id))
 
     // create an object where product_id are keys and values are quantities 
@@ -110,9 +100,10 @@ export default function Checkout() {
 
     let itemsWithout = JSON.parse(localStorage.getItem('cartItems')).filter((number) => { return number !== productID })
     let itemsGet = localStorage.setItem('cartItems', JSON.stringify(itemsWithout)) // updates local storage
+
     setProductData((prevState) => prevState.filter((object) => {
       return object.id !== productID
-    })) // updates state
+    })) // updates state after filtering
   }
 
 
