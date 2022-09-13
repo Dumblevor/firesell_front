@@ -6,7 +6,8 @@ This is the 4th project as part of the software engineering immersive course at 
 The assignment was to create a full-stack website with React and Flask.
 The project was to be completed **individually** within **5 days** over 2 weeks, for a total of 30 hours.
 
-Preview: ![preview-screen](./readme_assets/preview-screen.png)
+Preview: ![preview-screen](./readme_assets/preview-screen-p4.png)
+
 ## Technologies used 
 
 - Flask
