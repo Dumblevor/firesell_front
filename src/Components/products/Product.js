@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom"
+import { Link } from "react-router-dom"
 import * as React from 'react';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';

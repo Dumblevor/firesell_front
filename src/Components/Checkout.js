@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import baseUrl from "../config.js"
 import axios from 'axios'
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Button from '@mui/material/Button';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
